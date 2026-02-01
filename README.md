@@ -90,7 +90,7 @@ Rules:
 
 | Variable | Type | Default | Description | Example |
 |----------|------|---------|-------------|---------|
-| `ORCHESTRA_API_URL` | URL | `https://service.pcibooking.net/api` | Orchestra API base URL | `ORCHESTRA_API_URL=https://service.pcibooking.net/api` |
+| `ORCHESTRA_API_URL` | URL | `https://api.orchestrasolutions.com` | Orchestra API base URL | `ORCHESTRA_API_URL=https://api.orchestrasolutions.com` |
 | `MODE` | string | `TEST` | Environment mode: `TEST` or `LIVE` | `MODE=TEST` |
 | `PORT` | number | `3000` | Server port | `PORT=3000` |
 
@@ -118,7 +118,7 @@ Configure the payment methods you want to support. Each payment method requires 
 ```env
 # Orchestra API Configuration
 ORCHESTRA_API_KEY=sk_test_abc123def456ghi789
-ORCHESTRA_API_URL=https://service.pcibooking.net/api
+ORCHESTRA_API_URL=https://api.orchestrasolutions.com
 MODE=TEST
 
 # Payment Gateway (required for processing card payments)
