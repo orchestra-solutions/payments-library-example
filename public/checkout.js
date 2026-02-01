@@ -14,7 +14,7 @@ async function initPayment() {
 
     if (!config.hasApiKey) {
       configStatus.className = 'config-status warning';
-      configStatus.innerHTML = '<strong>Configuration needed:</strong> Set your ORCHESTRA_API_KEY in the .env file. See README for details.';
+      configStatus.innerHTML = '<strong>Configuration needed:</strong> Set your ORCHESTRA_API_KEY in the .env file. Don\'t have an account? <a href="https://portal.orchestrasolutions.com/#/register" target="_blank">Sign up free</a>.';
       loadingEl.textContent = 'Please configure your API credentials';
       return;
     }

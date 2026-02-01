@@ -8,18 +8,32 @@ app.use(express.static('public'));
 
 // Configuration from environment variables
 const config = {
-  apiKey: process.env.ORCHESTRA_API_KEY || 'your-api-key',
+  apiKey: process.env.ORCHESTRA_API_KEY,
   apiBaseUrl: process.env.ORCHESTRA_API_URL || 'https://service.pcibooking.net/api',
-  paymentGatewayAccountId: process.env.PAYMENT_GATEWAY_ACCOUNT_ID || 'your-psp-account',
-  eWalletAccountIds: (process.env.EWALLET_ACCOUNT_IDS || '').split(',').filter(Boolean),
-  mode: process.env.MODE || 'TEST'
+  paymentGatewayAccountId: process.env.PAYMENT_GATEWAY_ACCOUNT_ID,
+  mode: process.env.MODE || 'TEST',
+  // Individual eWallet accounts
+  eWalletAccounts: {
+    googlePay: process.env.EWALLET_GOOGLEPAY_ACCOUNT_ID,
+    applePay: process.env.EWALLET_APPLEPAY_ACCOUNT_ID,
+    payPal: process.env.EWALLET_PAYPAL_ACCOUNT_ID,
+    bankPay: process.env.EWALLET_BANKPAY_ACCOUNT_ID,
+    upi: process.env.EWALLET_UPI_ACCOUNT_ID
+  }
 };
+
+// Build array of configured eWallet account IDs
+function getConfiguredEWalletAccountIds() {
+  return Object.values(config.eWalletAccounts).filter(Boolean);
+}
 
 // Create a payment session
 app.post('/api/create-session', async (req, res) => {
   const { amount, currency, countryCode } = req.body;
 
   try {
+    const eWalletAccountIds = getConfiguredEWalletAccountIds();
+
     const response = await fetch(`${config.apiBaseUrl}/EWalletOperations`, {
       method: 'POST',
       headers: {
@@ -29,7 +43,7 @@ app.post('/api/create-session', async (req, res) => {
       body: JSON.stringify({
         operation: 'CHARGE',
         paymentGatewayAccountId: config.paymentGatewayAccountId,
-        allowedeWalletAccountIds: config.eWalletAccountIds.length > 0 ? config.eWalletAccountIds : undefined,
+        allowedeWalletAccountIds: eWalletAccountIds.length > 0 ? eWalletAccountIds : undefined,
         currencyCode: currency || 'USD',
         countryCode: countryCode || 'US',
         amount: amount || 49.99,
@@ -81,11 +95,22 @@ app.post('/api/validate-payment', async (req, res) => {
 
 // Get current configuration (for display purposes, excludes sensitive data)
 app.get('/api/config', (req, res) => {
+  const configuredEWallets = Object.entries(config.eWalletAccounts)
+    .filter(([_, value]) => !!value)
+    .map(([key, _]) => key);
+
   res.json({
     mode: config.mode,
-    hasApiKey: !!config.apiKey && config.apiKey !== 'your-api-key',
-    hasPaymentGateway: !!config.paymentGatewayAccountId && config.paymentGatewayAccountId !== 'your-psp-account',
-    eWalletAccountsConfigured: config.eWalletAccountIds.length
+    hasApiKey: !!config.apiKey,
+    hasPaymentGateway: !!config.paymentGatewayAccountId,
+    eWalletAccounts: {
+      googlePay: !!config.eWalletAccounts.googlePay,
+      applePay: !!config.eWalletAccounts.applePay,
+      payPal: !!config.eWalletAccounts.payPal,
+      bankPay: !!config.eWalletAccounts.bankPay,
+      upi: !!config.eWalletAccounts.upi
+    },
+    eWalletAccountsConfigured: configuredEWallets.length
   });
 });
 

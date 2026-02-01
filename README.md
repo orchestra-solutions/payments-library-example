@@ -43,16 +43,36 @@ Open this example in StackBlitz:
 
 ## Configuration
 
-All configuration is done via environment variables. Copy `.env.example` to `.env` and set the following values:
+All configuration is done via environment variables. Copy `.env.example` to `.env` and set the following values.
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `ORCHESTRA_API_KEY` | Yes | Your Orchestra API key from the [Portal](https://portal.orchestrasolutions.com) |
-| `ORCHESTRA_API_URL` | No | API base URL (default: `https://service.pcibooking.net/api`) |
-| `PAYMENT_GATEWAY_ACCOUNT_ID` | Yes | Your PSP account ID configured in Orchestra |
-| `EWALLET_ACCOUNT_IDS` | No | Comma-separated list of eWallet account IDs (PayPal, Google Pay, Apple Pay) |
-| `MODE` | No | `TEST` for sandbox or `LIVE` for production (default: `TEST`) |
-| `PORT` | No | Server port (default: `3000`) |
+Don't have an Orchestra account? [Sign up free](https://portal.orchestrasolutions.com/#/register).
+
+### Required Settings
+
+| Variable | Description |
+|----------|-------------|
+| `ORCHESTRA_API_KEY` | Your Orchestra API key from the [Portal](https://portal.orchestrasolutions.com) |
+| `PAYMENT_GATEWAY_ACCOUNT_ID` | Your PSP account ID configured in Orchestra |
+
+### Optional Settings
+
+| Variable | Description |
+|----------|-------------|
+| `ORCHESTRA_API_URL` | API base URL (default: `https://service.pcibooking.net/api`) |
+| `MODE` | `TEST` for sandbox or `LIVE` for production (default: `TEST`) |
+| `PORT` | Server port (default: `3000`) |
+
+### eWallet Accounts (Optional)
+
+Configure the payment methods you want to support:
+
+| Variable | Payment Method |
+|----------|----------------|
+| `EWALLET_GOOGLEPAY_ACCOUNT_ID` | Google Pay |
+| `EWALLET_APPLEPAY_ACCOUNT_ID` | Apple Pay |
+| `EWALLET_PAYPAL_ACCOUNT_ID` | PayPal |
+| `EWALLET_BANKPAY_ACCOUNT_ID` | Bank Pay (Open Banking/ACH) |
+| `EWALLET_UPI_ACCOUNT_ID` | UPI |
 
 ### Getting Your Credentials
 
@@ -65,7 +85,7 @@ All configuration is done via environment variables. Copy `.env.example` to `.en
 ```env
 ORCHESTRA_API_KEY=sk_test_abc123...
 PAYMENT_GATEWAY_ACCOUNT_ID=my-stripe-account
-EWALLET_ACCOUNT_IDS=my-paypal-account,my-googlepay-account
+EWALLET_GOOGLEPAY_ACCOUNT_ID=my-googlepay-account
 MODE=TEST
 ```
 
