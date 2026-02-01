@@ -59,7 +59,7 @@ app.post('/api/create-session', async (req, res) => {
     }
 
     const data = await response.json();
-    res.json({ sessionToken: data.Token });
+    res.json({ sessionToken: data.token });
   } catch (error) {
     console.error('Error creating session:', error);
     res.status(500).json({ error: 'Internal server error' });
