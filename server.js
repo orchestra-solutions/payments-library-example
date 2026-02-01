@@ -14,6 +14,7 @@ const config = {
   mode: process.env.MODE || 'TEST',
   // Individual eWallet accounts
   eWalletAccounts: {
+    cardPay: process.env.EWALLET_CARDPAY_ACCOUNT_ID,
     googlePay: process.env.EWALLET_GOOGLEPAY_ACCOUNT_ID,
     applePay: process.env.EWALLET_APPLEPAY_ACCOUNT_ID,
     payPal: process.env.EWALLET_PAYPAL_ACCOUNT_ID,
@@ -104,6 +105,7 @@ app.get('/api/config', (req, res) => {
     hasApiKey: !!config.apiKey,
     hasPaymentGateway: !!config.paymentGatewayAccountId,
     eWalletAccounts: {
+      cardPay: !!config.eWalletAccounts.cardPay,
       googlePay: !!config.eWalletAccounts.googlePay,
       applePay: !!config.eWalletAccounts.applePay,
       payPal: !!config.eWalletAccounts.payPal,

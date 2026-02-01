@@ -94,17 +94,18 @@ Rules:
 | `MODE` | string | `TEST` | Environment mode: `TEST` or `LIVE` | `MODE=TEST` |
 | `PORT` | number | `3000` | Server port | `PORT=3000` |
 
-### eWallet Account Settings (Optional)
+### eWallet Account Settings
 
-Configure the payment methods you want to support. Leave blank to disable that payment method.
+Configure the payment methods you want to support. Each payment method requires its own eWallet account configured in the Orchestra Portal. Leave blank to disable that payment method.
 
 | Variable | Type | Payment Method | Example |
 |----------|------|----------------|---------|
-| `EWALLET_GOOGLEPAY_ACCOUNT_ID` | string | Google Pay | `EWALLET_GOOGLEPAY_ACCOUNT_ID=gpay-merchant-123` |
-| `EWALLET_APPLEPAY_ACCOUNT_ID` | string | Apple Pay | `EWALLET_APPLEPAY_ACCOUNT_ID=applepay-merchant-456` |
-| `EWALLET_PAYPAL_ACCOUNT_ID` | string | PayPal | `EWALLET_PAYPAL_ACCOUNT_ID=paypal-business-789` |
-| `EWALLET_BANKPAY_ACCOUNT_ID` | string | Bank Pay (Open Banking/ACH) | `EWALLET_BANKPAY_ACCOUNT_ID=bankpay-account-abc` |
-| `EWALLET_UPI_ACCOUNT_ID` | string | UPI | `EWALLET_UPI_ACCOUNT_ID=upi-merchant-def` |
+| `EWALLET_CARDPAY_ACCOUNT_ID` | string | Card Pay (credit/debit cards) | `EWALLET_CARDPAY_ACCOUNT_ID=cardpay-account-123` |
+| `EWALLET_GOOGLEPAY_ACCOUNT_ID` | string | Google Pay | `EWALLET_GOOGLEPAY_ACCOUNT_ID=gpay-merchant-456` |
+| `EWALLET_APPLEPAY_ACCOUNT_ID` | string | Apple Pay | `EWALLET_APPLEPAY_ACCOUNT_ID=applepay-merchant-789` |
+| `EWALLET_PAYPAL_ACCOUNT_ID` | string | PayPal | `EWALLET_PAYPAL_ACCOUNT_ID=paypal-business-abc` |
+| `EWALLET_BANKPAY_ACCOUNT_ID` | string | Bank Pay (Open Banking/ACH) | `EWALLET_BANKPAY_ACCOUNT_ID=bankpay-account-def` |
+| `EWALLET_UPI_ACCOUNT_ID` | string | UPI | `EWALLET_UPI_ACCOUNT_ID=upi-merchant-ghi` |
 
 ### Getting Your Credentials
 
@@ -120,10 +121,11 @@ ORCHESTRA_API_KEY=sk_test_abc123def456ghi789
 ORCHESTRA_API_URL=https://service.pcibooking.net/api
 MODE=TEST
 
-# Payment Gateway (required for card payments)
+# Payment Gateway (required for processing card payments)
 PAYMENT_GATEWAY_ACCOUNT_ID=my-stripe-test-account
 
-# eWallet Accounts (optional - only configure the ones you need)
+# eWallet Accounts (configure the payment methods you want to support)
+EWALLET_CARDPAY_ACCOUNT_ID=my-cardpay-account
 EWALLET_GOOGLEPAY_ACCOUNT_ID=my-googlepay-account
 EWALLET_APPLEPAY_ACCOUNT_ID=
 EWALLET_PAYPAL_ACCOUNT_ID=
@@ -139,6 +141,7 @@ PORT=3000
 ```env
 ORCHESTRA_API_KEY=sk_test_abc123def456ghi789
 PAYMENT_GATEWAY_ACCOUNT_ID=my-stripe-test-account
+EWALLET_CARDPAY_ACCOUNT_ID=my-cardpay-account
 MODE=TEST
 ```
 
