@@ -9,7 +9,7 @@ app.use(express.static('public'));
 // Configuration from environment variables
 const config = {
   apiKey: process.env.ORCHESTRA_API_KEY,
-  apiBaseUrl: process.env.ORCHESTRA_API_URL || 'https://service.pcibooking.net/api',
+  apiBaseUrl: process.env.ORCHESTRA_API_URL || 'https://api.orchestrasolutions.com',
   paymentGatewayAccountId: process.env.PAYMENT_GATEWAY_ACCOUNT_ID,
   mode: process.env.MODE || 'TEST',
   // Individual eWallet accounts
