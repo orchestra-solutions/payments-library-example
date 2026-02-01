@@ -38,7 +38,7 @@ app.post('/api/create-session', async (req, res) => {
     const response = await fetch(`${config.apiBaseUrl}/EWalletOperations`, {
       method: 'POST',
       headers: {
-        'Authorization': `APIKEY ${config.apiKey}`,
+        'X-Api-Key': config.apiKey,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -74,7 +74,7 @@ app.post('/api/validate-payment', async (req, res) => {
     const response = await fetch(`${config.apiBaseUrl}/EWalletOperations/validateResults`, {
       method: 'POST',
       headers: {
-        'Authorization': `APIKEY ${config.apiKey}`,
+        'X-Api-Key': config.apiKey,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ token: resultToken })
