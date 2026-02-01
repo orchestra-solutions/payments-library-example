@@ -4,20 +4,22 @@ A complete working example for integrating the [Orchestra Payments Library](http
 
 ## Quick Start
 
-### 1. Clone this repository
+### Option A: Run Locally
+
+#### 1. Clone this repository
 
 ```bash
 git clone https://github.com/orchestra-solutions/payments-library-example.git
 cd payments-library-example
 ```
 
-### 2. Install dependencies
+#### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Configure your credentials
+#### 3. Configure your credentials
 
 Copy the example environment file and fill in your values:
 
@@ -27,7 +29,7 @@ cp .env.example .env
 
 Edit `.env` with your Orchestra credentials (see [Configuration](#configuration) below).
 
-### 4. Start the server
+#### 4. Start the server
 
 ```bash
 npm start
@@ -35,9 +37,25 @@ npm start
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Try it Online
+### Option B: Run in StackBlitz (with your own credentials)
 
-Open this example in StackBlitz:
+To test with your own Orchestra credentials in StackBlitz:
+
+1. **Fork this repository** to your own GitHub account
+2. Open your fork in StackBlitz: `https://stackblitz.com/github/YOUR-USERNAME/payments-library-example`
+3. Create a `.env` file in StackBlitz with your credentials
+4. The server will restart automatically
+
+<details>
+<summary>Why fork?</summary>
+
+Forking creates your own copy of the repository where you can safely add credentials. Never commit credentials to the main repository or any public branch, as they would be visible to everyone.
+
+</details>
+
+## Preview the Code
+
+View the code structure in StackBlitz (no credentials, for reference only):
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/orchestra-solutions/payments-library-example)
 
@@ -47,32 +65,46 @@ All configuration is done via environment variables. Copy `.env.example` to `.en
 
 Don't have an Orchestra account? [Sign up free](https://portal.orchestrasolutions.com/#/register).
 
+### Environment File Format
+
+Create a `.env` file in the project root. Each line should follow the format:
+
+```
+VARIABLE_NAME=value
+```
+
+Rules:
+- No spaces around the `=` sign
+- No quotes needed for values (unless the value contains spaces)
+- Lines starting with `#` are comments
+- Empty values are allowed (the feature will be disabled)
+
 ### Required Settings
 
-| Variable | Description |
-|----------|-------------|
-| `ORCHESTRA_API_KEY` | Your Orchestra API key from the [Portal](https://portal.orchestrasolutions.com) |
-| `PAYMENT_GATEWAY_ACCOUNT_ID` | Your PSP account ID configured in Orchestra |
+| Variable | Type | Description | Example |
+|----------|------|-------------|---------|
+| `ORCHESTRA_API_KEY` | string | Your Orchestra API key | `ORCHESTRA_API_KEY=sk_live_abc123def456` |
+| `PAYMENT_GATEWAY_ACCOUNT_ID` | string | Your PSP account ID configured in Orchestra Portal | `PAYMENT_GATEWAY_ACCOUNT_ID=my-stripe-account` |
 
 ### Optional Settings
 
-| Variable | Description |
-|----------|-------------|
-| `ORCHESTRA_API_URL` | API base URL (default: `https://service.pcibooking.net/api`) |
-| `MODE` | `TEST` for sandbox or `LIVE` for production (default: `TEST`) |
-| `PORT` | Server port (default: `3000`) |
+| Variable | Type | Default | Description | Example |
+|----------|------|---------|-------------|---------|
+| `ORCHESTRA_API_URL` | URL | `https://service.pcibooking.net/api` | Orchestra API base URL | `ORCHESTRA_API_URL=https://service.pcibooking.net/api` |
+| `MODE` | string | `TEST` | Environment mode: `TEST` or `LIVE` | `MODE=TEST` |
+| `PORT` | number | `3000` | Server port | `PORT=3000` |
 
-### eWallet Accounts (Optional)
+### eWallet Account Settings (Optional)
 
-Configure the payment methods you want to support:
+Configure the payment methods you want to support. Leave blank to disable that payment method.
 
-| Variable | Payment Method |
-|----------|----------------|
-| `EWALLET_GOOGLEPAY_ACCOUNT_ID` | Google Pay |
-| `EWALLET_APPLEPAY_ACCOUNT_ID` | Apple Pay |
-| `EWALLET_PAYPAL_ACCOUNT_ID` | PayPal |
-| `EWALLET_BANKPAY_ACCOUNT_ID` | Bank Pay (Open Banking/ACH) |
-| `EWALLET_UPI_ACCOUNT_ID` | UPI |
+| Variable | Type | Payment Method | Example |
+|----------|------|----------------|---------|
+| `EWALLET_GOOGLEPAY_ACCOUNT_ID` | string | Google Pay | `EWALLET_GOOGLEPAY_ACCOUNT_ID=gpay-merchant-123` |
+| `EWALLET_APPLEPAY_ACCOUNT_ID` | string | Apple Pay | `EWALLET_APPLEPAY_ACCOUNT_ID=applepay-merchant-456` |
+| `EWALLET_PAYPAL_ACCOUNT_ID` | string | PayPal | `EWALLET_PAYPAL_ACCOUNT_ID=paypal-business-789` |
+| `EWALLET_BANKPAY_ACCOUNT_ID` | string | Bank Pay (Open Banking/ACH) | `EWALLET_BANKPAY_ACCOUNT_ID=bankpay-account-abc` |
+| `EWALLET_UPI_ACCOUNT_ID` | string | UPI | `EWALLET_UPI_ACCOUNT_ID=upi-merchant-def` |
 
 ### Getting Your Credentials
 
@@ -80,12 +112,33 @@ Configure the payment methods you want to support:
 2. **Payment Gateway Account**: Portal > Resources > Payment Gateway Accounts
 3. **eWallet Accounts**: Portal > Resources > eWallet Accounts
 
-### Example Configuration
+### Complete Example
 
 ```env
-ORCHESTRA_API_KEY=sk_test_abc123...
-PAYMENT_GATEWAY_ACCOUNT_ID=my-stripe-account
+# Orchestra API Configuration
+ORCHESTRA_API_KEY=sk_test_abc123def456ghi789
+ORCHESTRA_API_URL=https://service.pcibooking.net/api
+MODE=TEST
+
+# Payment Gateway (required for card payments)
+PAYMENT_GATEWAY_ACCOUNT_ID=my-stripe-test-account
+
+# eWallet Accounts (optional - only configure the ones you need)
 EWALLET_GOOGLEPAY_ACCOUNT_ID=my-googlepay-account
+EWALLET_APPLEPAY_ACCOUNT_ID=
+EWALLET_PAYPAL_ACCOUNT_ID=
+EWALLET_BANKPAY_ACCOUNT_ID=
+EWALLET_UPI_ACCOUNT_ID=
+
+# Server
+PORT=3000
+```
+
+### Minimal Example (Card Payments Only)
+
+```env
+ORCHESTRA_API_KEY=sk_test_abc123def456ghi789
+PAYMENT_GATEWAY_ACCOUNT_ID=my-stripe-test-account
 MODE=TEST
 ```
 
