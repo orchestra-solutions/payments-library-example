@@ -86,69 +86,73 @@ async function handleResult(result) {
     return;
   }
 
-  try {
-    // Parse the result token
-    const [data, success] = engine.parseResultToken(result.token);
-    console.log('Payment result:', data);
+  // Parse the result token
+  const [data, success] = engine.parseResultToken(result.token);
+  console.log('Payment result:', data);
 
-    // Check if payment succeeded on client side
-    if (!data.clientSuccess) {
-      resultEl.textContent = 'Payment failed: ' + (data.clientErrorMessage || 'Unknown error');
+  // Check if payment succeeded on client side
+  if (!data.clientSuccess) {
+    resultEl.textContent = 'Payment failed: ' + (data.clientErrorMessage || 'Unknown error');
+    resultEl.className = 'error';
+    return;
+  }
+
+  // Handle PSP charge results (CardPay, GooglePay, ApplePay)
+  if (data.upgChargeResults) {
+    if (data.upgChargeResults.operationResultCode === 'Success') {
+      resultEl.innerHTML = `
+        <strong>Payment successful!</strong><br>
+        Gateway: ${data.upgChargeResults.gatewayName}<br>
+        Reference: ${data.upgChargeResults.gatewayReference}<br>
+        Amount: ${data.upgChargeResults.amount} ${data.upgChargeResults.currency}
+      `;
+      resultEl.className = 'success';
+    } else {
+      resultEl.textContent = 'Payment declined: ' + (data.upgChargeResults.operationResultDescription || data.upgChargeResults.operationResultCode);
       resultEl.className = 'error';
       return;
     }
+  }
 
-    // Handle PSP charge results (CardPay, GooglePay, ApplePay)
-    if (data.upgChargeResults) {
-      if (data.upgChargeResults.operationResultCode === 'Success') {
-        resultEl.innerHTML = `
-          <strong>Payment successful!</strong><br>
-          Gateway: ${data.upgChargeResults.gatewayName}<br>
-          Reference: ${data.upgChargeResults.gatewayReference}<br>
-          Amount: ${data.upgChargeResults.amount} ${data.upgChargeResults.currency}
-        `;
-        resultEl.className = 'success';
-      } else {
-        resultEl.textContent = 'Payment declined: ' + (data.upgChargeResults.operationResultDescription || data.upgChargeResults.operationResultCode);
-        resultEl.className = 'error';
-      }
+  // Handle direct charge results (PayPal, BankPay)
+  if (data.directChargeResults) {
+    if (data.directChargeResults.success) {
+      resultEl.innerHTML = '<strong>Payment successful!</strong><br>Provider: PayPal';
+      resultEl.className = 'success';
+    } else {
+      resultEl.textContent = 'Payment failed: ' + data.directChargeResults.message;
+      resultEl.className = 'error';
+      return;
     }
+  }
 
-    // Handle direct charge results (PayPal, BankPay)
-    if (data.directChargeResults) {
-      if (data.directChargeResults.success) {
-        resultEl.innerHTML = '<strong>Payment successful!</strong><br>Provider: PayPal';
-        resultEl.className = 'success';
-      } else {
-        resultEl.textContent = 'Payment failed: ' + data.directChargeResults.message;
-        resultEl.className = 'error';
-      }
-    }
+  // Log tokenization results
+  if (data.tokenAndMaskedCardModel && data.tokenAndMaskedCardModel.bankCard) {
+    const card = data.tokenAndMaskedCardModel.bankCard;
+    console.log('Card details:', {
+      type: card.type,
+      maskedNumber: card.number,
+      token: data.tokenAndMaskedCardModel.token
+    });
+  }
 
-    // Handle tokenization results
-    if (data.tokenAndMaskedCardModel) {
-      const card = data.tokenAndMaskedCardModel.bankCard;
-      console.log('Card tokenized:', {
-        type: card.type,
-        lastFour: card.number,
-        token: data.tokenAndMaskedCardModel.token
-      });
-    }
-
-    // Validate with server (in production, always validate server-side)
+  // Server-side validation (recommended for production)
+  try {
     const validationResponse = await fetch('/api/validate-payment', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ resultToken: result.token })
     });
 
-    const validationResult = await validationResponse.json();
-    console.log('Server validation:', validationResult);
-
+    if (validationResponse.ok) {
+      const validationResult = await validationResponse.json();
+      console.log('Server validation:', validationResult);
+    } else {
+      console.warn('Server validation failed:', validationResponse.status);
+    }
   } catch (error) {
-    console.error('Error handling result:', error);
-    resultEl.textContent = 'Error processing payment: ' + error.message;
-    resultEl.className = 'error';
+    // Don't overwrite success message - validation is secondary
+    console.warn('Could not reach server for validation:', error.message);
   }
 }
 

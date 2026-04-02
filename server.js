@@ -45,6 +45,7 @@ app.post('/api/create-session', async (req, res) => {
         operation: 'CHARGE',
         paymentGatewayAccountId: config.paymentGatewayAccountId,
         allowedeWalletAccountIds: eWalletAccountIds.length > 0 ? eWalletAccountIds : undefined,
+        allowedBrands: ['VISA', 'MASTERCARD', 'AMEX'],
         currencyCode: currency || 'USD',
         countryCode: countryCode || 'US',
         amount: amount || 49.99,
@@ -77,7 +78,7 @@ app.post('/api/validate-payment', async (req, res) => {
         'X-Api-Key': config.apiKey,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ token: resultToken })
+      body: JSON.stringify(resultToken)
     });
 
     if (!response.ok) {
